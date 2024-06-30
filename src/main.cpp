@@ -1,7 +1,6 @@
 /**
-* @file CAN_asdb.h
 * @brief Main source code for steering wheel
-* @details This file is the main source code for the raspberry pi pico mounted on the steering wheel of the t24 car from the LART formula student team 
+* @details This file is the main source code for the raspberry pi pico mounted on the steering wheel of the t24 car from the LART formula student team   
 * @author Bruno Vicente
 * @version 0.0.1
 **/
