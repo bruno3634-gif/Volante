@@ -1,4 +1,4 @@
-/**
+/** 
 * @brief Main source code for steering wheel
 * @details This file is the main source code for the raspberry pi pico mounted on the steering wheel of the t24 car from the LART formula student team   
 * @author Bruno Vicente
@@ -15,9 +15,16 @@
 #define debug_led3 14
 
 
-
+/*  ------      UART module id's for calibration    ------  */
 #define dynamics 0b00000000
 #define IMU      0b00000001
+
+
+/*  ------      UART variable id's     ------  */
+#define speed_id  255
+#define HV_batery_level_id 254
+#define LV_batery_level_id 253
+#define Current_Menu 252
 
 
 
@@ -30,6 +37,17 @@ void ask_calibration_values(uint8_t address,long unsigned int CAN_address_rec,lo
 
 int num_modulos_ini = 2;
 MCP_CAN CAN0(10); 
+volatile int menu = 0;
+
+
+
+
+/*  ------      Information to display      ------  */
+
+uint8_t CAN_conected = 0;
+uint8_t speed = 0;
+
+
 
 void setup() 
 {
