@@ -8,11 +8,70 @@
 
 #include <Arduino.h>
 #include <mcp_can.h>
-#include <SPI.h>
+#include <hardware/uart.h>
+#include "stdio.h"
+//#include "pico/stdlib.h"
+//#include <ardubson.h>
+#include <BSONPP.h>
 
 #define debug_led1 12
 #define debug_led2 13
 #define debug_led3 14
+
+
+
+/*          --------          */
+
+#define __LART_T24__
+#define PB1_TX_13 9
+#define PB0_RX_12 8
+
+
+
+
+#define BSON_RPM "rpm"
+#define BSON_VEHICLESPEED "vel"
+#define BSON_ENGINETEMPERATURE "eng_t"
+#define BSON_BATTERYVOLTAGE "bat_v"
+#define SIZE_OF_BSON 40
+
+
+#ifdef __LART_T14__
+  #define BSON_GEARSHIFT "gear"
+  #define BSON_OILPRESSURE "oil_p"
+  #define BSON_OILTEMPERATURE "oil_t"
+  #define BSON_DATALOGGERSTATUS "dtl_s"
+  #define BSON_AFR "af_r"
+  #define BSON_TCSLIP "tc_s"
+  #define BSON_TCLAUNCH "tc_l"
+  #undef SIZE_OF_BSON
+  #define SIZE_OF_BSON 128
+#endif
+
+#ifdef __LART_T24__
+
+
+  #define BSON_SOC "soc"
+  #define BSON_BATTERYTEMPERATURE "bat_t"
+  #define BSON_INVERTERTEMPERATURE "inv_t"
+  #define BSON_POWER "pow"
+  #define BSON_LAPCOUNT "lap_c"
+  #define BSON_LAPTIME "lap_t"
+ 
+  #undef SIZE_OF_BSON
+ 
+  #define SIZE_OF_BSON 128
+
+  
+#endif 
+
+
+
+/*          --------          */
+
+
+UART Serial_uart(8,9,NC,NC);
+
 
 
 /*  ------      UART module id's for calibration    ------  */
@@ -46,11 +105,14 @@ volatile int menu = 0;
 
 uint8_t CAN_conected = 0;
 uint8_t speed = 0;
+uint8_t HV_batery_level = 0;
+uint8_t LV_batery_level = 0;
 
 
 
 void setup() 
 {
+  Serial_uart.begin(115200);
   pinMode(debug_led1,OUTPUT);
   pinMode(debug_led2,OUTPUT);
   pinMode(debug_led3,OUTPUT);
@@ -71,6 +133,8 @@ void setup()
 void loop() 
 {
   
+
+  Serial_uart.println("Hello joao!");
 
 }
 
