@@ -117,21 +117,31 @@ void setup()
   pinMode(debug_led2,OUTPUT);
   pinMode(debug_led3,OUTPUT);
   Serial.begin(115200);
-  if(CAN0.begin(MCP_ANY, CAN_1000KBPS, MCP_16MHZ) == CAN_OK)
-  {
-    digitalWrite(LED2,HIGH);
-  }
-  digitalWrite(debug_led1,LOW);
-  while(Serial.available())
-  {
+  
+  
 
-  }
-  digitalWrite(debug_led1,HIGH);
+  
   initial_modules_calibration();
 }
 
 void loop() 
 {
+  if(Serial_uart.available())
+  {
+    digitalWrite(debug_led1,HIGH);
+  }
+  else
+  {
+    digitalWrite(debug_led1,LOW);
+  }
+  if(CAN0.begin(MCP_ANY, CAN_1000KBPS, MCP_16MHZ) == CAN_OK)
+  {
+    digitalWrite(LED2,HIGH);
+  }
+  else
+  {
+    digitalWrite(LED2,LOW); 
+  }
   
 
   Serial_uart.println("Hello joao!");
