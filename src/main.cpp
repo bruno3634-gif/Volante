@@ -5,14 +5,19 @@
 * @version 0.0.1
 **/
 
-
+#include <hardware/watchdog.h>
 #include <Arduino.h>
 #include <mcp_can.h>
 #include <hardware/uart.h>
-#include "stdio.h"
+#include <stdio.h>
 //#include "pico/stdlib.h"
 //#include <ardubson.h>
 #include <BSONPP.h>
+#include "hardware/timer.h"
+#include "hardware/irq.h"
+#include "pico/time.h"
+
+const uint32_t TIMER_INTERVAL = 2000; 
 
 #define debug_led1 12
 #define debug_led2 13
@@ -23,8 +28,8 @@
 /*          --------          */
 
 #define __LART_T24__
-#define PB1_TX_13 9
-#define PB0_RX_12 8
+//#define PB1_TX_13 9
+//#define PB0_RX_12 8
 
 
 
@@ -70,7 +75,7 @@
 /*          --------          */
 
 
-UART Serial_uart(8,9,NC,NC);
+UART Serial_uart(0,1,-1,-1);
 
 
 
@@ -110,23 +115,36 @@ uint8_t LV_batery_level = 0;
 
 
 
+void timer_callback() {
+  // Alimenta o watchdog timer dentro da interrupção do timer
+  watchdog_update();
+}
+
+
+
 void setup() 
 {
-  Serial_uart.begin(115200);
+  
+  Serial1.begin(115200);
   pinMode(debug_led1,OUTPUT);
   pinMode(debug_led2,OUTPUT);
   pinMode(debug_led3,OUTPUT);
   Serial.begin(115200);
-  
-  
+  digitalWrite(debug_led1,HIGH);
+  digitalWrite(LED2,HIGH);
+  CAN0.begin(MCP_ANY, CAN_1000KBPS, MCP_16MHZ);
 
+  uint32_t timer_interval_us = TIMER_INTERVAL * 1000; // Converte para microssegundos
   
-  initial_modules_calibration();
+  
+  watchdog_enable(10000, 1);
+  
+  //initial_modules_calibration();
 }
 
 void loop() 
 {
-  if(Serial_uart.available())
+  if(Serial1.available())
   {
     digitalWrite(debug_led1,HIGH);
   }
@@ -134,7 +152,7 @@ void loop()
   {
     digitalWrite(debug_led1,LOW);
   }
-  if(CAN0.begin(MCP_ANY, CAN_1000KBPS, MCP_16MHZ) == CAN_OK)
+  if(CAN0.getError() == CAN_OK)
   {
     digitalWrite(LED2,HIGH);
   }
@@ -143,9 +161,11 @@ void loop()
     digitalWrite(LED2,LOW); 
   }
   
-
-  Serial_uart.println("Hello joao!");
-
+  delay(1000);
+  //Serial_uart.println(",,,");;
+ 
+  Serial1.println("Olá joão");
+  Serial.println("LP");
 }
 
 
